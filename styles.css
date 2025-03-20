@@ -1,55 +1,154 @@
 @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Patrick+Hand&display=swap');
 
+/* Mobile-first base styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
     font-family: 'Comic Neue', cursive;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
     background-color: #f0f0f0;
     color: #333;
+    padding: 0;
+    margin: 0;
 }
 
 .container {
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0.5rem;
 }
 
-.category-selection {
-    margin-bottom: 2rem;
+.app-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
 }
 
-.category-checkboxes {
-    margin: 1rem 0;
-}
-
-.category-checkbox {
-    margin: 0.5rem;
-}
-
-button {
-    padding: 0.5rem 1rem;
-    margin: 0 0.5rem;
-    font-size: 1rem;
-    cursor: pointer;
+/* Collapsible category section */
+.category-section {
     background-color: #fff;
-    border: 2px solid #333;
-    border-radius: 5px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    position: relative;
+}
+
+.category-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+
+.category-toggle h3 {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 1.2rem;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.category-toggle .toggle-icon {
+    transition: transform 0.3s ease;
+}
+
+.category-toggle.active .toggle-icon {
+    transform: rotate(180deg);
+}
+
+.category-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.category-section.open .category-content {
+    max-height: 200px;
+    padding: 0.75rem;
+}
+
+.checkbox-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.category-filters label {
+    margin: 0;
+    padding: 0.4rem 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    background-color: #f1f1f1;
+    border-radius: 15px;
+    font-size: 0.9rem;
+}
+
+/* Progress section */
+.progress-section {
+    padding: 0.5rem 0;
+}
+
+.progress-container {
+    width: 100%;
+    height: 10px;
+    background-color: #e9ecef;
+    border-radius: 25px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(45deg, #28a745, #20c997);
+    transition: width 0.3s ease;
+}
+
+.progress-details {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 0.8rem;
+    color: #666;
+    padding-top: 0.3rem;
+}
+
+/* Card section */
+.card-header-container {
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.card-category-title {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 1.5rem;
+    color: #2c3e50;
+    border-bottom: 1px dashed #bdc3c7;
+    padding-bottom: 0.3rem;
+    display: inline-block;
 }
 
 .card-container {
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
-    min-height: 300px;
     width: 100%;
+    margin: 0.5rem 0;
 }
 
 .card {
-    width: 300px;
-    height: 200px;
-    margin: 0 auto;
+    width: 100%;
+    max-width: 300px;
+    height: 180px;
     cursor: pointer;
 }
 
@@ -78,99 +177,70 @@ button {
     justify-content: center;
     padding: 1rem;
     box-sizing: border-box;
-    background-color: white;
-    border: 1px solid #ddd;
     border-radius: 10px;
     text-align: center;
 }
 
 .card-back {
     transform: rotateY(180deg);
-    background-color: #f8f8f8;
 }
 
 .card-label {
     position: absolute;
-    top: 10px;
+    top: 8px;
     left: 0;
     right: 0;
     text-align: center;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: #bbb;
-    font-family: 'Comic Neue', cursive;
     font-style: italic;
-    font-weight: normal;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
 .question, .answer {
     font-family: 'Patrick Hand', cursive;
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     width: 100%;
-    padding-top: 1.5rem;
+    padding-top: 1.2rem;
+    margin: 0;
 }
 
-.progress-container {
-    width: 300px;
-    height: 20px;
-    background-color: #e9ecef;
-    border-radius: 25px;
-    margin: 1rem auto;
-    overflow: hidden;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.progress-bar {
-    height: 100%;
-    background: linear-gradient(45deg, #28a745, #20c997);
-    transition: width 0.3s ease;
-}
-
-.progress-text {
-    text-align: center;
-    margin-top: 0.5rem;
-}
-
-.navigation-container {
+/* Button layout optimized for mobile */
+.button-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    gap: 0.5rem;
     width: 100%;
-    gap: 1rem;
-    margin: 2rem 0;
 }
 
-.primary-nav, .secondary-nav {
+.button-row {
     display: flex;
     justify-content: center;
-    gap: 1rem;
+    gap: 0.5rem;
     width: 100%;
 }
 
 .nav-button {
+    flex: 1;
     font-family: 'Comic Neue', cursive;
     font-weight: 700;
-    padding: 0.8rem 1.5rem;
+    padding: 0.7rem 0.5rem;
     border-radius: 25px;
     border: none;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    transition: transform 0.2s, box-shadow 0.2s;
-    min-width: 120px;
     justify-content: center;
+    gap: 0.3rem;
+    transition: background-color 0.2s;
+    font-size: 0.9rem;
+    max-width: 160px;
 }
 
-.nav-button:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.nav-button:active:not(:disabled) {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.nav-button svg {
+    width: 14px;
+    height: 14px;
 }
 
 .nav-button.primary {
@@ -184,11 +254,6 @@ button {
 }
 
 .nav-button.secondary {
-    background-color: #6c757d;
-    color: white;
-}
-
-.nav-button.add-card {
     background-color: #28a745;
     color: white;
 }
@@ -196,47 +261,14 @@ button {
 .shuffle-button {
     background-color: #ffd43b;
     color: #2c3e50;
-    font-weight: bold;
-    border: 2px solid #e6c235;
 }
 
-.shuffle-button:hover:not(:disabled) {
-    background-color: #ffde6a;
+.import-export-button {
+    background-color: #6c757d;
+    color: white;
 }
 
-.shuffle-button.spinning {
-    opacity: 0.8;
-}
-
-.category-filters {
-    margin: 1rem 0;
-    padding: 1rem;
-    background-color: #fff;
-    border-radius: 15px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.category-filters h4 {
-    font-family: 'Patrick Hand', cursive;
-    margin-bottom: 1rem;
-    color: #2c3e50;
-}
-
-.category-filters label {
-    margin: 0 0.5rem;
-    font-family: 'Comic Neue', cursive;
-}
-
-.progress-details {
-    font-family: 'Comic Neue', cursive;
-    display: flex;
-    justify-content: space-between;
-    width: 300px;
-    margin: 0 auto;
-    font-size: 1rem;
-    color: #666;
-}
-
+/* Modal */
 .modal {
     display: none;
     position: fixed;
@@ -245,11 +277,12 @@ button {
     width: 100%;
     height: 100%;
     background-color: rgba(0,0,0,0.5);
+    z-index: 1000;
 }
 
 .modal-content {
     background-color: white;
-    padding: 2rem;
+    padding: 1.5rem;
     border-radius: 10px;
     position: absolute;
     top: 50%;
@@ -257,42 +290,99 @@ button {
     transform: translate(-50%, -50%);
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.8rem;
+    width: 90%;
+    max-width: 350px;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 1.3rem;
+    color: #2c3e50;
 }
 
 .modal-content input,
-.modal-content select {
-    padding: 0.5rem;
+.modal-content select,
+.modal-content button {
+    padding: 0.7rem;
     font-size: 1rem;
+    border-radius: 5px;
+    border: 1px solid #ddd;
 }
 
-.import-export-buttons {
-    width: 100%;
-    margin-top: 1rem;
-}
-
-.import-export-buttons:not(:first-of-type) {
-    display: none;
-}
-
-.import-export-buttons button {
-    padding: 0.5rem 1rem;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+.modal-content button {
     cursor: pointer;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
 }
 
-.import-export-buttons button:hover {
-    background-color: #e0e0e0;
+.modal-content button#closeModalBtn {
+    background-color: #6c757d;
 }
 
-.card-header {
-    font-family: 'Patrick Hand', cursive;
-    font-size: 1.5rem;
-    color: #2c3e50;
-    text-transform: capitalize;
-    margin-bottom: 1rem;
+.app-footer {
+    text-align: center;
     padding: 0.5rem;
-    border-bottom: 2px dashed #bdc3c7;
+    margin-top: 0.5rem;
+    color: #6c757d;
+    font-size: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Tablet and desktop adjustments */
+@media (min-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    .app-content {
+        gap: 1rem;
+    }
+
+    .category-section {
+        max-height: none;
+    }
+    
+    .category-toggle {
+        padding: 1rem;
+    }
+    
+    .category-toggle h3 {
+        font-size: 1.3rem;
+    }
+    
+    .button-container {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .button-row {
+        width: auto;
+    }
+    
+    .nav-button {
+        padding: 0.8rem 1.2rem;
+        font-size: 1rem;
+    }
+}
+
+/* Add this to your CSS file */
+.reset-button {
+    margin-top: 0.5rem;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.reset-button:hover {
+    background-color: #c82333;
 } 

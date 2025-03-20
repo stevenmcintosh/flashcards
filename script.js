@@ -6,14 +6,14 @@ let currentCards = [];
 let currentCardIndex = 0;
 
 // DOM Elements
-const categoryCheckboxesDiv = document.querySelector('.category-checkboxes');
-const startBtn = document.getElementById('startBtn');
-const cardInterface = document.querySelector('.card-interface');
+const categorySection = document.querySelector('.category-section');
+const categoryToggle = document.querySelector('.category-toggle');
+const checkboxContainer = document.querySelector('.checkbox-container');
 const card = document.querySelector('.card');
 const questionElement = document.querySelector('.question');
 const answerElement = document.querySelector('.answer');
 const progressBar = document.querySelector('.progress-bar');
-const progressText = document.querySelector('.progress-text');
+const categoryNameElement = document.querySelector('.category-name');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
 const newCardBtn = document.getElementById('newCardBtn');
@@ -21,61 +21,118 @@ const modal = document.getElementById('newCardModal');
 const categorySelect = document.getElementById('categorySelect');
 const saveCardBtn = document.getElementById('saveCardBtn');
 const closeModalBtn = document.getElementById('closeModalBtn');
+const exportBtn = document.getElementById('exportBtn');
+const importBtn = document.getElementById('importBtn');
+const importInput = document.getElementById('importInput');
+const resetBtn = document.getElementById('resetBtn');
 
-// Initialize category checkboxes
-Object.keys(cardCategories).forEach(category => {
-    const label = document.createElement('label');
-    label.className = 'category-checkbox';
-    label.innerHTML = `
-        <input type="checkbox" value="${category}">
-        ${category.charAt(0).toUpperCase() + category.slice(1)}
-    `;
-    categoryCheckboxesDiv.appendChild(label);
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    loadCardsFromStorage();
+    
+    // Toggle category section
+    categoryToggle.addEventListener('click', () => {
+        categorySection.classList.toggle('open');
+        categoryToggle.classList.toggle('active');
+    });
+    
+    // Create category checkboxes
+    createCategoryCheckboxes();
+    
+    // Set up event listeners
+    card.addEventListener('click', () => card.classList.toggle('flipped'));
+    prevBtn.addEventListener('click', showPreviousCard);
+    nextBtn.addEventListener('click', showNextCard);
+    newCardBtn.addEventListener('click', () => modal.style.display = 'block');
+    closeModalBtn.addEventListener('click', () => modal.style.display = 'none');
+    saveCardBtn.addEventListener('click', saveNewCard);
+    exportBtn.addEventListener('click', exportCards);
+    importBtn.addEventListener('click', () => importInput.click());
+    importInput.addEventListener('change', importCards);
+    resetBtn.addEventListener('click', resetStorage);
+    
+    // Setup shuffle button
+    const shuffleBtn = document.getElementById('shuffleBtn');
+    shuffleBtn.addEventListener('click', performShuffle);
+    
+    // Initialize with at least one category selected
+    const firstCheckbox = document.querySelector('.checkbox-container input');
+    if (firstCheckbox) {
+        firstCheckbox.checked = true;
+        updateSelectedCategories();
+    }
 });
 
-// Event Listeners
-startBtn.addEventListener('click', startLearning);
-card.addEventListener('click', () => card.classList.toggle('flipped'));
-prevBtn.addEventListener('click', showPreviousCard);
-nextBtn.addEventListener('click', showNextCard);
-newCardBtn.addEventListener('click', () => modal.style.display = 'block');
-closeModalBtn.addEventListener('click', () => modal.style.display = 'none');
-saveCardBtn.addEventListener('click', saveNewCard);
+function createCategoryCheckboxes() {
+    checkboxContainer.innerHTML = '';
+    
+    Object.keys(cardCategories).forEach(category => {
+        const label = document.createElement('label');
+        label.innerHTML = `
+            <input type="checkbox" value="${category}">
+            ${category.charAt(0).toUpperCase() + category.slice(1)}
+        `;
+        checkboxContainer.appendChild(label);
+        
+        // Add change listener
+        label.querySelector('input').addEventListener('change', updateSelectedCategories);
+    });
+}
 
-function startLearning() {
-    selectedCategories = Array.from(document.querySelectorAll('.category-checkbox input:checked'))
+function updateSelectedCategories() {
+    selectedCategories = Array.from(document.querySelectorAll('.checkbox-container input:checked'))
         .map(checkbox => checkbox.value);
     
     if (selectedCategories.length === 0) {
-        alert('Please select at least one category');
+        currentCards = [];
+        updateCard();
         return;
     }
-
-    document.querySelector('.category-selection').style.display = 'none';
-    document.querySelector('.card-interface').style.display = 'block';
     
-    createCategoryFilters();
-    updateSelectedCategories();
+    // Update cards array
+    currentCards = selectedCategories.flatMap(category => 
+        cardCategories[category].questions.map(q => ({
+            ...q,
+            category
+        }))
+    );
+    
+    // Shuffle cards
+    shuffleArray(currentCards);
+    
+    // Reset to first card
+    currentCardIndex = 0;
+    updateCard();
+    
+    // Close category section after selection on mobile
+    if (window.innerWidth < 768) {
+        categorySection.classList.remove('open');
+        categoryToggle.classList.remove('active');
+    }
 }
 
 function updateCard() {
     if (currentCards.length === 0) {
-        questionElement.textContent = "Please select at least one category";
-        document.querySelector('.card-header').textContent = "";
+        questionElement.textContent = "Please select a category";
+        answerElement.textContent = "";
+        categoryNameElement.textContent = "No category selected";
+        progressBar.style.width = '0%';
+        document.querySelector('.cards-done').textContent = "0 cards done";
+        document.querySelector('.cards-remaining').textContent = "0 cards remaining";
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
         return;
     }
 
-    console.log(`Current card index: ${currentCardIndex} of ${currentCards.length} cards`);
-    
     const currentCard = currentCards[currentCardIndex];
     questionElement.textContent = currentCard.question;
     answerElement.textContent = currentCard.answer;
     card.classList.remove('flipped');
     
     // Update card category display
-    document.querySelector('.card-header').textContent = `Category: ${currentCard.category}`;
+    categoryNameElement.textContent = currentCard.category;
     
-    // Update card colour
+    // Update card color based on category
     const categoryColor = cardCategories[currentCard.category].colour;
     document.querySelector('.card-front').style.backgroundColor = categoryColor;
     document.querySelector('.card-back').style.backgroundColor = categoryColor;
@@ -83,7 +140,8 @@ function updateCard() {
     // Update progress
     const progress = ((currentCardIndex + 1) / currentCards.length) * 100;
     progressBar.style.width = `${progress}%`;
-    updateProgressDetails();
+    document.querySelector('.cards-done').textContent = `${currentCardIndex} cards done`;
+    document.querySelector('.cards-remaining').textContent = `${currentCards.length - currentCardIndex - 1} cards remaining`;
 
     // Update navigation buttons
     prevBtn.disabled = currentCardIndex === 0;
@@ -101,6 +159,40 @@ function showNextCard() {
     if (currentCardIndex < currentCards.length - 1) {
         currentCardIndex++;
         updateCard();
+    }
+}
+
+function performShuffle() {
+    // Guard clauses
+    if (currentCards.length <= 1) {
+        return; // Nothing to shuffle
+    }
+    
+    // If we're on the last card, nothing to shuffle
+    if (currentCardIndex >= currentCards.length - 1) {
+        return;
+    }
+    
+    // Keep already viewed cards (excluding current card)
+    const viewedCards = currentCards.slice(0, currentCardIndex);
+    
+    // Take current card and remaining cards to shuffle together
+    const cardsToShuffle = currentCards.slice(currentCardIndex);
+    
+    // Shuffle the current and remaining cards
+    shuffleArray(cardsToShuffle);
+    
+    // Combine arrays: viewed cards + shuffled (current and remaining) cards
+    currentCards = [...viewedCards, ...cardsToShuffle];
+    
+    // Update display
+    updateCard();
+}
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
     }
 }
 
@@ -139,7 +231,6 @@ function saveNewCard() {
     
     if (selectedCategories.includes(category)) {
         currentCards.push({ question, answer, category });
-        shuffleArray(currentCards);
     }
     
     alert('Card saved successfully!');
@@ -171,7 +262,10 @@ function importCards(event) {
                 Object.assign(cardCategories, importedCards);
                 saveCardsToStorage();
                 alert('Cards imported successfully!');
-                location.reload();
+                
+                // Refresh categories and selected cards
+                createCategoryCheckboxes();
+                updateSelectedCategories();
             } catch (error) {
                 alert('Error importing cards. Please check the file format.');
                 console.error('Import error:', error);
@@ -181,166 +275,82 @@ function importCards(event) {
     }
 }
 
-function addImportExportButtons() {
-    // Remove any existing import/export buttons
-    const existingButtons = document.querySelectorAll('.import-export-buttons');
-    existingButtons.forEach(buttons => buttons.remove());
-
-    const buttonsDiv = document.createElement('div');
-    buttonsDiv.className = 'import-export-buttons';
-    buttonsDiv.innerHTML = `
-        <div class="secondary-nav">
-            <button id="exportBtn" class="nav-button secondary">
-                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
-                    <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
-                </svg>
-                Export Cards
-            </button>
-            <input type="file" id="importInput" accept=".json" style="display: none;">
-            <button id="importBtn" class="nav-button secondary">
-                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
-                    <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
-                </svg>
-                Import Cards
-            </button>
-        </div>
-    `;
-    
-    // Add the buttons after the existing navigation buttons
-    const navigationContainer = document.querySelector('.navigation-container');
-    navigationContainer.appendChild(buttonsDiv);
-    
-    // Add event listeners
-    document.getElementById('exportBtn').addEventListener('click', exportCards);
-    document.getElementById('importBtn').addEventListener('click', () => {
-        document.getElementById('importInput').click();
-    });
-    document.getElementById('importInput').addEventListener('change', importCards);
-}
-
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-}
-
 // Initialize category select in modal
-Object.keys(cardCategories).forEach(category => {
-    const option = document.createElement('option');
-    option.value = category;
-    option.textContent = category.charAt(0).toUpperCase() + category.slice(1);
-    categorySelect.appendChild(option);
-});
-
-// Initialize the application
-loadCardsFromStorage();
-addImportExportButtons();
-
-document.addEventListener('DOMContentLoaded', () => {
-    const startBtn = document.getElementById('startBtn');
-    startBtn.addEventListener('click', startLearning);
-    
-    // Initialize the application
-    loadCardsFromStorage();
-    addImportExportButtons();
-    
-    const shuffleBtn = document.getElementById('shuffleBtn');
-    shuffleBtn.addEventListener('click', performShuffle);
-});
-
-function updateProgressDetails() {
-    const cardsDone = currentCardIndex;
-    const cardsRemaining = currentCards.length - currentCardIndex - 1;
-    
-    document.querySelector('.cards-done').textContent = `${cardsDone} cards done`;
-    document.querySelector('.cards-remaining').textContent = `${cardsRemaining} cards remaining`;
-}
-
-function createCategoryFilters() {
-    const filtersDiv = document.querySelector('.category-filters');
-    filtersDiv.innerHTML = '<h4>Filter Categories:</h4>';
-    
+function initializeCategorySelect() {
+    categorySelect.innerHTML = '';
     Object.keys(cardCategories).forEach(category => {
-        const label = document.createElement('label');
-        label.innerHTML = `
-            <input type="checkbox" value="${category}" 
-                   ${selectedCategories.includes(category) ? 'checked' : ''}>
-            ${category.charAt(0).toUpperCase() + category.slice(1)}
-        `;
-        filtersDiv.appendChild(label);
-        
-        // Add change listener
-        label.querySelector('input').addEventListener('change', updateSelectedCategories);
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+        categorySelect.appendChild(option);
     });
 }
 
-function updateSelectedCategories() {
-    selectedCategories = Array.from(document.querySelectorAll('.category-filters input:checked'))
-        .map(checkbox => checkbox.value);
-    
-    if (selectedCategories.length === 0) {
+// Initialize category select when modal is opened
+newCardBtn.addEventListener('click', initializeCategorySelect);
+
+function resetStorage() {
+    if (confirm('Are you sure you want to reset all cards? This will remove all custom cards and return to default settings.')) {
+        // Clear local storage
+        localStorage.removeItem(STORAGE_KEY);
+        
+        // Reset to original card data
+        Object.keys(cardCategories).forEach(category => {
+            // If you want to completely reset all cards, use this:
+            // Only keeping default categories and removing all questions
+            cardCategories[category].questions = [];
+        });
+        
+        // Alternatively, if you want to restore default cards:
+        // This would need to be implemented with your default card set
+        restoreDefaultCards();
+        
+        // Update UI
+        createCategoryCheckboxes();
+        selectedCategories = [];
         currentCards = [];
+        currentCardIndex = 0;
         updateCard();
-        return;
+        
+        alert('All cards have been reset to default settings.');
     }
-    
-    // Update cards array
-    currentCards = selectedCategories.flatMap(category => 
-        cardCategories[category].questions.map(q => ({
-            ...q,
-            category
-        }))
-    );
-    
-    // Shuffle all cards initially
-    const tempCards = [...currentCards];
-    shuffleArray(tempCards);
-    currentCards = tempCards;
-    
-    // Reset to first card
-    currentCardIndex = 0;
-    updateCard();
 }
 
-function performShuffle() {
-    console.log("Shuffle button clicked");
+function restoreDefaultCards() {
+    // Default cards
+    const defaultCards = {
+        general: {
+            colour: '#ffebee', // Light red
+            questions: [
+                { question: "what is the opposite of black?", answer: "white" },
+                { question: "what is the opposite of hot?", answer: "cold" }
+            ]
+        },
+        maths: {
+            colour: '#e3f2fd', // Light blue
+            questions: [
+                { question: "what is 5+5?", answer: "10" },
+                { question: "what is 7x7?", answer: "49" }
+            ]
+        },
+        science: {
+            colour: '#f1f8e9', // Light green
+            questions: [
+                { question: "Name three states?", answer: "gas, liquid, solid" },
+                { question: "What happens to a solid under heat?", answer: "melts into a liquid" }
+            ]
+        }
+    };
     
-    // Guard clauses - return early if nothing to shuffle
-    if (!currentCards || currentCards.length <= 1) {
-        console.log("Not enough cards to shuffle");
-        return;
-    }
-    
-    if (currentCardIndex >= currentCards.length - 1) {
-        console.log("Already at last card, nothing to shuffle");
-        return;
-    }
-    
-    console.log(`Current index: ${currentCardIndex}, Total cards: ${currentCards.length}`);
-    
-    // Create copies of arrays to avoid reference issues
-    const seenCards = [...currentCards.slice(0, currentCardIndex + 1)];
-    const unseenCards = [...currentCards.slice(currentCardIndex + 1)];
-    
-    console.log(`Cards to keep: ${seenCards.length}, Cards to shuffle: ${unseenCards.length}`);
-    
-    // Manual shuffle of unseen cards using Fisher-Yates algorithm
-    for (let i = unseenCards.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        // Swap elements
-        const temp = unseenCards[i];
-        unseenCards[i] = unseenCards[j];
-        unseenCards[j] = temp;
-    }
-    
-    // Combine arrays
-    currentCards = [...seenCards, ...unseenCards];
-    
-    console.log("Shuffle complete");
-    
-    // Force a display update
-    updateCard();
+    // Reset to default cards
+    Object.keys(defaultCards).forEach(category => {
+        if (cardCategories[category]) {
+            cardCategories[category].questions = [...defaultCards[category].questions];
+        } else {
+            cardCategories[category] = {
+                colour: defaultCards[category].colour,
+                questions: [...defaultCards[category].questions]
+            };
+        }
+    });
 } 

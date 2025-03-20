@@ -5,47 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flash Cards</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Patrick+Hand&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <div class="category-selection" style="display: block;">
-            <h3>Select Categories:</h3>
-            <div class="category-checkboxes"></div>
-            <button id="startBtn">Start Learning</button>
-        </div>
-
-        <div class="card-interface" style="display: none;">
-            <div class="category-filters">
-                <h4>Filter Categories:</h4>
-                <!-- Categories will be added here dynamically -->
+        <div class="app-content">
+            <!-- Collapsible category section -->
+            <div class="category-section">
+                <div class="category-toggle">
+                    <h3>Categories</h3>
+                    <svg class="toggle-icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/>
+                    </svg>
+                </div>
+                <div class="category-content">
+                    <div class="checkbox-container">
+                        <!-- Categories will be added here dynamically -->
+                    </div>
+                </div>
             </div>
 
-            <div class="progress-container">
-                <div class="progress-bar"></div>
-            </div>
-            <div class="progress-details">
-                <span class="cards-done">0 cards done</span>
-                <span class="cards-remaining">0 cards remaining</span>
+            <!-- Card category title -->
+            <div class="card-header-container">
+                <h2 class="card-category-title">Category: <span class="category-name">Select a category</span></h2>
             </div>
 
+            <!-- Card container -->
             <div class="card-container">
-                <div class="card-header"></div>
                 <div class="card">
                     <div class="card-inner">
                         <div class="card-front">
-                            <span class="card-label">Question</span>
-                            <p class="question">Click a category to start!</p>
+                            <span class="card-label">QUESTION</span>
+                            <p class="question">Select a category to start!</p>
                         </div>
                         <div class="card-back">
-                            <span class="card-label">Answer</span>
+                            <span class="card-label">ANSWER</span>
                             <p class="answer"></p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="navigation-container">
-                <div class="primary-nav">
+            <!-- Progress section -->
+            <div class="progress-section">
+                <div class="progress-container">
+                    <div class="progress-bar"></div>
+                </div>
+                <div class="progress-details">
+                    <span class="cards-done">0 cards done</span>
+                    <span class="cards-remaining">0 cards remaining</span>
+                </div>
+            </div>
+
+            <!-- Buttons organized in rows -->
+            <div class="button-container">
+                <div class="button-row">
                     <button id="prevBtn" class="nav-button primary">
                         <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                             <path d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
@@ -59,22 +73,44 @@
                         </svg>
                     </button>
                 </div>
-                <div class="secondary-nav">
+                <div class="button-row">
                     <button id="shuffleBtn" class="nav-button shuffle-button">
                         <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                             <path d="M0 3.5A.5.5 0 0 1 .5 3H1c2.202 0 3.827 1.24 4.874 2.418.49.552.865 1.102 1.126 1.532.26-.43.636-.98 1.126-1.532C9.173 4.24 10.798 3 13 3v1c-1.798 0-3.173 1.01-4.126 2.082A9.624 9.624 0 0 0 7.556 8a9.624 9.624 0 0 0 1.317 1.918C9.828 10.99 11.204 12 13 12v1c-2.202 0-3.827-1.24-4.874-2.418A10.595 10.595 0 0 1 7 9.05c-.26.43-.636.98-1.126 1.532C4.827 11.76 3.202 13 1 13H.5a.5.5 0 0 1 0-1H1c1.798 0 3.173-1.01 4.126-2.082A9.624 9.624 0 0 0 6.444 8a9.624 9.624 0 0 0-1.317-1.918C4.172 5.01 2.796 4 1 4H.5a.5.5 0 0 1-.5-.5z"/>
                         </svg>
                         Shuffle
                     </button>
-                    <button id="newCardBtn" class="nav-button add-card">
+                    <button id="newCardBtn" class="nav-button secondary">
                         <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                             <path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z"/>
                         </svg>
                         Add Card
                     </button>
                 </div>
+                <div class="button-row">
+                    <button id="exportBtn" class="nav-button import-export-button">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                            <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
+                        </svg>
+                        Export
+                    </button>
+                    <input type="file" id="importInput" accept=".json" style="display: none;">
+                    <button id="importBtn" class="nav-button import-export-button">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                            <path d="M8.5 11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5z"/>
+                        </svg>
+                        Import
+                    </button>
+                </div>
             </div>
         </div>
+        
+        <footer class="app-footer">
+            <p>Flash Cards v1.0</p>
+            <button id="resetBtn" class="reset-button">Reset All Cards</button>
+        </footer>
     </div>
 
     <div id="newCardModal" class="modal">
