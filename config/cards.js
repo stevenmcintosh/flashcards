@@ -1,55 +1,77 @@
-export const cardCategories = {
-    general: {
-        colour: '#ffebee', // Light red
-        questions: [
-            { question: "What is the capital of France?", answer: "Paris" },
-            { question: "Who wrote the play 'Romeo and Juliet'?", answer: "William Shakespeare" },
-            { question: "What is the longest river in the UK?", answer: "River Severn" },
-            { question: "Which planet is known as the Red Planet?", answer: "Mars" },
-            { question: "What is the chemical symbol for gold?", answer: "Au" },
-            { question: "Who was the first man to walk on the moon?", answer: "Neil Armstrong" },
-            { question: "What is the square root of 144?", answer: "12" },
-            { question: "How many continents are there in the world?", answer: "7" },
-            { question: "Who is the current Prime Minister of the UK? (As of 2024)", answer: "Rishi Sunak" },
-            { question: "What is the name of the largest ocean on Earth?", answer: "Pacific Ocean" }
-        ]
-    },
-    maths: {
+const cardCategories = {
+    Maths: {
         colour: '#e3f2fd', // Light blue
         questions: [
-            { question: "Solve for x: 3x + 5 = 20", answer: "x = 5" },
-            { question: "Factorise: x² - 9", answer: "(x - 3)(x + 3)" },
-            { question: "Expand: (x + 4)(x - 2)", answer: "x² + 2x - 8" },
-            { question: "Solve for x: 2x - 7 = 3x + 1", answer: "x = -8" },
-            { question: "Simplify: 5x - 3x + 7", answer: "2x + 7" },
-            { question: "Expand and simplify: (x + 3)²", answer: "x² + 6x + 9" },
-            { question: "Solve for x: x² - 4x = 0", answer: "x = 0 or x = 4" },
-            { question: "Factorise: x² + 7x + 12", answer: "(x + 3)(x + 4)" },
-            { question: "Rearrange to make x the subject: y = 2x + 5", answer: "x = (y - 5) / 2" }
+            { question: "What is the value of π (to 2 decimal places)?", answer: "3.14" },
+            { question: "What is 12 squared?", answer: "144" },
+            { question: "What is the mode in a set of numbers?", answer: "The most frequent number" },
+            { question: "Solve: 3x = 12. What is x?", answer: "4" },
+            { question: "What is 25% of 80?", answer: "20" },
+            { question: "How many degrees in a right angle?", answer: "90" },
+            { question: "What is the perimeter of a rectangle with sides 4cm and 6cm?", answer: "20cm" },
+            { question: "What is 0.75 as a fraction?", answer: "3/4" },
+            { question: "What is the formula for the area of a triangle?", answer: "½ × base × height" },
+            { question: "What is 3³ (3 to the power of 3)?", answer: "27" }
         ]
     },
-    science: {
+    Science: {
         colour: '#f1f8e9', // Light green
         questions: [
-            { question: "Name three states?", answer: "gas, liquid, solid" },
-            { question: "When a light rays reflect at the same angle, what type of reflection is this?", answer: "Specular reflection" },
-            { question: "Where does the light travel the fastest?", answer: "In the vaccuum" },
-            { question: "What part of the light detects light and sends the signals to the brain?", answer: "The retina detects light and sends the signals to the brain" },
-            { question: "What does opaque mean?", answer: "Not see-through" },
-            { question: "Light always travels in a straight line? true or false", answer: "true" },
-            { question: "Why do leaves have a big surface area?", answer: "For absorbing light" },
-            { question: "What does opaque mean?", answer: "Not see-through" },
-            { question: "What is subliming?", answer: "Solid to gas" },
-            { question: "What force pulls objects toward the center of the Earth?", answer: "Gravity" },
-            { question: "What is the process where plants make their own food using sunlight?", answer: "Photosynthesis" },
-            { question: "What is the chemical symbol for water?", answer: "H2O" },
-            { question: "Which gas do humans breathe in to survive?", answer: "Oxygen" },
-            { question: "What color does litmus paper turn in acid?", answer: "Red" },
-            { question: "What is the hardest natural substance on Earth?", answer: "Diamond" },
-            { question: "What type of energy is stored in food?", answer: "Chemical energy" },
-            { question: "Which organ in the human body pumps blood?", answer: "The heart" },
-            { question: "What type of rock is formed from cooled lava?", answer: "Igneous rock" },
-            { question: "Which planet is the largest in the solar system?", answer: "Jupiter" }
+            { question: "What force pulls objects towards Earth?", answer: "Gravity" },
+            { question: "What gas do we breathe in from the air?", answer: "Oxygen" },
+            { question: "What part of the cell controls activities?", answer: "Nucleus" },
+            { question: "What is H₂O?", answer: "Water" },
+            { question: "What is the centre of an atom called?", answer: "Nucleus" },
+            { question: "Name the three states of matter.", answer: "Solid, liquid, gas" },
+            { question: "What happens to water when it boils?", answer: "Turns into steam/gas" },
+            { question: "What is photosynthesis?", answer: "Plants making food using sunlight" },
+            { question: "What organ pumps blood around the body?", answer: "Heart" },
+            { question: "What is the chemical symbol for Iron?", answer: "Fe" }
+        ]
+    },
+    Geography: {
+        colour: '#fff3e0', // Light orange
+        questions: [
+            { question: "What is the capital of France?", answer: "Paris" },
+            { question: "Name a continent that starts with 'A'.", answer: "Africa, Asia, Antarctica, Australia" },
+            { question: "What is the longest river in the world?", answer: "The Nile" },
+            { question: "Which ocean is the largest?", answer: "Pacific Ocean" },
+            { question: "What country is famous for pyramids?", answer: "Egypt" },
+            { question: "What do we call the lines that run east to west on a map?", answer: "Latitude" },
+            { question: "What natural disaster is measured using the Richter scale?", answer: "Earthquake" },
+            { question: "Which country has the most people?", answer: "China" },
+            { question: "What is the UK’s highest mountain?", answer: "Ben Nevis" },
+            { question: "What is a rainforest?", answer: "A dense forest with high rainfall" }
+        ]
+    },
+    English: {
+        colour: '#ede7f6', // Light purple
+        questions: [
+            { question: "What is a noun?", answer: "A person, place, or thing" },
+            { question: "What is a verb?", answer: "An action word" },
+            { question: "What is an adjective?", answer: "A word that describes a noun" },
+            { question: "What is a synonym for 'happy'?", answer: "Joyful, cheerful, glad" },
+            { question: "What is a metaphor?", answer: "A comparison without using 'like' or 'as'" },
+            { question: "What does 'foreshadowing' mean in literature?", answer: "Hinting at future events" },
+            { question: "What is the past tense of 'run'?", answer: "Ran" },
+            { question: "Name a Shakespeare play.", answer: "Romeo and Juliet, Macbeth, Hamlet, etc." },
+            { question: "What is the plural of 'mouse'?", answer: "Mice" },
+            { question: "What punctuation ends a question?", answer: "Question mark (?)" }
+        ]
+    },
+    General: {
+        colour: '#ffebee', // Light red
+        questions: [
+            { question: "What is the opposite of day?", answer: "Night" },
+            { question: "What colour do you get when you mix red and blue?", answer: "Purple" },
+            { question: "What is the freezing point of water (°C)?", answer: "0°C" },
+            { question: "How many days are there in a leap year?", answer: "366" },
+            { question: "What is the name of Harry Potter's owl?", answer: "Hedwig" },
+            { question: "Which sport uses a bat and a ball and is played on a pitch?", answer: "Cricket" },
+            { question: "What does a thermometer measure?", answer: "Temperature" },
+            { question: "What planet do we live on?", answer: "Earth" },
+            { question: "What is the tallest land animal?", answer: "Giraffe" },
+            { question: "What is the largest internal organ in the human body?", answer: "Liver" }
         ]
     }
-}; 
+};
