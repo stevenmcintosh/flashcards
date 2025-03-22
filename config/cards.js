@@ -10,7 +10,6 @@ export const cardCategories = {
             { question: "Who was the first man to walk on the moon?", answer: "Neil Armstrong" },
             { question: "What is the square root of 144?", answer: "12" },
             { question: "How many continents are there in the world?", answer: "7" },
-            { question: "Who is the coolest Dad in the world?", answer: "Annie's Dad" },
             { question: "Who is the current Prime Minister of the UK? (As of 2024)", answer: "Rishi Sunak" },
             { question: "What is the name of the largest ocean on Earth?", answer: "Pacific Ocean" }
         ]
